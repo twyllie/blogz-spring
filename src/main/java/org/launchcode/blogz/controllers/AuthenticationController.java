@@ -48,7 +48,7 @@ public class AuthenticationController extends AbstractController {
 		if(isValidUsername && isValidPassword && passMatch){
 			User user = new User(username, password);
 			userDao.save(user);
-			//TODO: Someting to do with sessions to mean that the user in signed in?
+			setUserInSession(request.getSession(), user);
 			return "redirect:blog/newpost";
 		}
 
@@ -66,14 +66,13 @@ public class AuthenticationController extends AbstractController {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
-		boolean error = true;
 		
 		if (User.isValidUsername(username)){
 			User user = userDao.findByUsername(username);
 			if (user != null){
 				if (user.isMatchingPassword(password)){
-					error = false;
-					//TODO: Something with sessions.
+					setUserInSession(request.getSession(), user);
+					return "redirect:blog/newpost";
 				}
 			}
 		}else{
@@ -81,9 +80,6 @@ public class AuthenticationController extends AbstractController {
 			model.addAttribute("username", username);
 		}
 		
-		if(!error){
-			return "redirect:blog/newpost";
-		}
 
 		return "/login";
 	}
