@@ -20,9 +20,39 @@ public class AuthenticationController extends AbstractController {
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String signup(HttpServletRequest request, Model model) {
 		
-		// TODO - implement signup
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
 		
-		return "redirect:blog/newpost";
+		boolean isValidUsername = false, isValidPassword = false, passMatch = false;
+		
+		if (User.isValidUsername(username)){
+			isValidUsername = true;
+		}else{
+			model.addAttribute("username", username);
+			model.addAttribute("username_error", "This is not a valid username.");
+		}
+		
+		if (User.isValidPassword(password)){
+			isValidPassword = true;
+		}else{
+			model.addAttribute("username_error", "This is not a valid password.");
+		}
+		
+		if (password.equals(request.getParameter("verify"))){
+			passMatch = true;
+		}else{
+			model.addAttribute("username_error", "Your passwords do not match.");
+		}
+		
+		
+		if(isValidUsername && isValidPassword && passMatch){
+			User user = new User(username, password);
+			userDao.save(user);
+			//TODO: Someting to do with sessions to mean that the user in signed in?
+			return "redirect:blog/newpost";
+		}
+
+		return "/signup";
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -33,9 +63,29 @@ public class AuthenticationController extends AbstractController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(HttpServletRequest request, Model model) {
 		
-		// TODO - implement login
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
 		
-		return "redirect:blog/newpost";
+		boolean error = true;
+		
+		if (User.isValidUsername(username)){
+			User user = userDao.findByUsername(username);
+			if (user != null){
+				if (user.isMatchingPassword(password)){
+					error = false;
+					//TODO: Something with sessions.
+				}
+			}
+		}else{
+			model.addAttribute("error", "Either the username or password are incorrect.");
+			model.addAttribute("username", username);
+		}
+		
+		if(!error){
+			return "redirect:blog/newpost";
+		}
+
+		return "/login";
 	}
 	
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
