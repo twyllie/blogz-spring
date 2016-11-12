@@ -23,9 +23,21 @@ public class PostController extends AbstractController {
 	@RequestMapping(value = "/blog/newpost", method = RequestMethod.POST)
 	public String newPost(HttpServletRequest request, Model model) {
 		
-		// TODO - implement newPost
+		String title = request.getParameter("title");
+		String body = request.getParameter("body");
 		
-		return "redirect:index"; // TODO - this redirect should go to the new post's page  		
+		if (title.equals("") || body.equals("")){
+			model.addAttribute("error", "There is something wrong with your post or title.");
+			model.addAttribute("title", title);
+			model.addAttribute("body", body);
+			return "/blog/newpost";
+		}
+		
+		User user = getUserFromSession(request.getSession());
+		Post post = new Post(title, body, user);
+		postDao.save(post);
+		
+		return "redirect:"+ user + post.getUid();
 	}
 	
 	@RequestMapping(value = "/blog/{username}/{uid}", method = RequestMethod.GET)

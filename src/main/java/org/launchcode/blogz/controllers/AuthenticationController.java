@@ -35,13 +35,13 @@ public class AuthenticationController extends AbstractController {
 		if (User.isValidPassword(password)){
 			isValidPassword = true;
 		}else{
-			model.addAttribute("username_error", "This is not a valid password.");
+			model.addAttribute("password_error", "This is not a valid password.");
 		}
 		
 		if (password.equals(request.getParameter("verify"))){
 			passMatch = true;
 		}else{
-			model.addAttribute("username_error", "Your passwords do not match.");
+			model.addAttribute("verify_error", "Your passwords do not match.");
 		}
 		
 		
