@@ -1,7 +1,6 @@
 package org.launchcode.blogz.controllers;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.launchcode.blogz.models.User;
 import org.springframework.stereotype.Controller;
@@ -35,12 +34,14 @@ public class AuthenticationController extends AbstractController {
 		if (User.isValidPassword(password)){
 			isValidPassword = true;
 		}else{
+			model.addAttribute("username", username);
 			model.addAttribute("password_error", "This is not a valid password.");
 		}
 		
 		if (password.equals(request.getParameter("verify"))){
 			passMatch = true;
 		}else{
+			model.addAttribute("username", username);
 			model.addAttribute("verify_error", "Your passwords do not match.");
 		}
 		
@@ -75,12 +76,11 @@ public class AuthenticationController extends AbstractController {
 					return "redirect:blog/newpost";
 				}
 			}
-		}else{
-			model.addAttribute("error", "Either the username or password are incorrect.");
-			model.addAttribute("username", username);
 		}
 		
-
+		model.addAttribute("error", "Either the username or password are incorrect.");
+		model.addAttribute("username", username);
+		
 		return "/login";
 	}
 	

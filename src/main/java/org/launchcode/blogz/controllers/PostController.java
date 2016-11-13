@@ -30,14 +30,14 @@ public class PostController extends AbstractController {
 			model.addAttribute("error", "There is something wrong with your post or title.");
 			model.addAttribute("title", title);
 			model.addAttribute("body", body);
-			return "/blog/newpost";
+			return "newpost";
 		}
 		
 		User user = getUserFromSession(request.getSession());
 		Post post = new Post(title, body, user);
 		postDao.save(post);
 		
-		return "redirect:"+ user + post.getUid();
+		return "redirect:"+ user.getUsername() + "/" + post.getUid();
 	}
 	
 	@RequestMapping(value = "/blog/{username}/{uid}", method = RequestMethod.GET)
@@ -51,8 +51,9 @@ public class PostController extends AbstractController {
 	@RequestMapping(value = "/blog/{username}", method = RequestMethod.GET)
 	public String userPosts(@PathVariable String username, Model model) {
 		
-		int userId = userDao.findByUsername(username).getUid();
-		List<Post> posts = postDao.findByAuthor(userId);
+		
+		User user = userDao.findByUsername(username);
+		List<Post> posts = postDao.findByAuthor(user);
 		model.addAttribute("posts", posts);
 		
 		return "blog";

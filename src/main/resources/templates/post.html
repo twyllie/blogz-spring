@@ -6,7 +6,7 @@
 
 	<div th:replace="template :: navigation"></div>
 	<h1 th:text = "${post.title}"></h1>
-	<p th:text = "'by ' + ${post.author} + ' on ' + ${#dates.format(post.created, 'yyyy-MM-dd')}"></p>
+	<p th:text = "'by ' + ${post.author.username} + ' on ' + ${#dates.format(post.created, 'yyyy-MM-dd')}"></p>
 	<p th:text = "${post.body}"></p>
 
 </body>
