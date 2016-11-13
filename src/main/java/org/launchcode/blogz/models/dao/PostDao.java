@@ -12,8 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostDao extends CrudRepository<Post, Integer> {
     
+	List<Post> findAll();
     List<Post> findByAuthor(int authorId);
     
-    // TODO - add method signatures as needed
+    Post findByUid(int uid);
 	
 }

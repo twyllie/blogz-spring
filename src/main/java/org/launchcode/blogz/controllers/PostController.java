@@ -43,7 +43,7 @@ public class PostController extends AbstractController {
 	@RequestMapping(value = "/blog/{username}/{uid}", method = RequestMethod.GET)
 	public String singlePost(@PathVariable String username, @PathVariable int uid, Model model) {
 		
-		// TODO - implement singlePost
+		model.addAttribute("post", postDao.findByUid(uid));
 		
 		return "post";
 	}
@@ -51,7 +51,9 @@ public class PostController extends AbstractController {
 	@RequestMapping(value = "/blog/{username}", method = RequestMethod.GET)
 	public String userPosts(@PathVariable String username, Model model) {
 		
-		// TODO - implement userPosts
+		int userId = userDao.findByUsername(username).getUid();
+		List<Post> posts = postDao.findByAuthor(userId);
+		model.addAttribute("posts", posts);
 		
 		return "blog";
 	}
